@@ -1,3 +1,5 @@
+# Warning : This Script is not ready to use yet
+
 # Price Feed Script for BitShares
 
 ## Installation 
