@@ -579,6 +579,9 @@ class Feed(object):
         self.derive3Markets(symbol, backing_symbol, apply_volume_limit=apply_volume_limit)
         log.info("Computed data (after derivation): \n{}".format(self.data))
 
+        if self.data["USDT"]:
+            self.data["DUS"] = self.data["USDT"]
+
         if symbol not in self.data:
             log.warn("'{}' not in self.data".format(symbol))
             return
