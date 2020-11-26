@@ -1,4 +1,4 @@
-git+ssh://github.com/mvs-org/python-dna.git@metaverses#egg=bitshares
+git+ssh://github.com/mvs-org/python-dna.git@metaverse#egg=bitshares
 pyyaml
 pytest
 coverage
