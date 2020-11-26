@@ -34,8 +34,8 @@ setup(
     },
     install_requires=[
         "requests==2.22.0", # Required by graphenlib
-        "bitshares>=0.3.0 ",
-        "uptick",
+        "bitshares@git+https://github.com/mvs-org/python-dna.git@metaverse#egg=bitshares",
+        "uptick==0.2.2",
         "prettytable",
         "click",
         "colorama",
@@ -46,6 +46,9 @@ setup(
     extras_require = {
         'history_db_postgresql':  ["SQLAlchemy", "py-postgresql"]
     },
+    dependency_links = [
+        "git+https://github.com/mvs-org/python-dna.git@metaverse#egg=bitshares",
+    ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
     include_package_data=True,
