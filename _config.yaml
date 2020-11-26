@@ -1,0 +1,261 @@
+# If true, a new price feed needs manual confirmation
+confirm: True
+
+# The producer name(s)
+producer: init1
+
+# Exchange settings (Here, you may need to add API keys)
+exchanges:
+    ####################################
+    # BTC Exchange Rates
+    ####################################
+    # btc_price:
+    #     klass: Composite
+    #     aggregation_type: 'first_valid'
+    #     order: ['zb']
+    #     exchanges:
+    #         worldcoinindex:
+    #             klass: WorldCoinIndex
+    #             api_key: 
+    #             free_subscription: True
+    #             quotes:
+    #                 - BTC
+    #                 - USDT
+    #                 - ETH
+    #             bases:
+    #                 - USD
+    #         coinmarketcap:
+    #             klass: Coinmarketcap
+    #             quotes:
+    #                 - USDT
+    #                 - BTC
+    #                 - ETH
+    #             bases:
+    #                 - USD
+            
+    ####################################
+    # Crypto Exchange Rates
+    ####################################
+    # aex:
+    #     klass: Aex
+    #     quotes:
+    #         - BTS
+    #     bases:
+    #         - USDT
+    #         - CNC
+    #     aliases:
+    #         CNC: CNY
+    # binance:
+    #     klass: Binance
+    #     quotes:
+    #         - BTS
+    #     bases:
+    #         - BTC
+    # openledger:
+    #     klass: Graphene
+    #     quotes:
+    #         - BTS
+    #     bases:
+    #         - OPEN.BTC
+    #     aliases:
+    #         OPEN.BTC: BTC
+    # gdex:
+    #     klass: Graphene
+    #     quotes:
+    #         - BTS
+    #     bases:
+    #         - GDEX.BTC
+    #     aliases:
+    #         GDEX.BTC: BTC
+    # bitshares:
+    #     klass: Graphene
+    #     quotes:
+    #         - CNY
+    #     bases:
+    #         - BTS
+    #     aliases:
+    #         CNY: BITCNY
+    # coinegg:
+    #     klass: CoinEgg
+    #     quotes:
+    #         - BTS
+    #     bases:
+    #         - BTC
+    # cointiger:
+    #     klass: CoinTiger
+    #     quotes:
+    #         - BTS
+    #         - BITCNY
+    #     bases:
+    #         - BTC
+    #         - ETH
+    # gateio:
+    #     klass: GateIo
+    #     enable: False
+    #     quotes:
+    #         - BTS
+    #     bases:
+    #         - BTC
+    #         - USDT
+    # huobi:
+    #     klass: Huobi
+    #     quotes:
+    #         - BTS
+    #     bases:
+    #         - BTC
+    #         - USDT
+    #         - ETH
+    # lbank:
+    #     klass: Lbank
+    #     quotes:
+    #         - BTS
+    #     bases:
+    #         - BTC
+    #         - ETH
+    # poloniex:
+        # klass: Poloniex
+        # quotes:
+        #     - BTS
+        # bases:
+        #     - BTC
+    zb:
+        klass: Zb
+        quotes:
+            - DNA
+        bases:
+            - BTC
+            - ETH
+            - USDT
+    # qc_fees:
+    #     klass: Manual
+    #     feed:
+    #       QC:
+    #         CNY:
+    #           price: 0.995
+    #           volume: 1.0
+    # magicwallet:
+        # klass: MagicWallet
+        # api_key: 
+        # period: 1h
+        
+# default settings
+default:
+    # max age of a feed
+    maxage: 43200
+
+    # minimum percentage that forces a publish
+    min_change: 1
+
+    # warn if price change goes above this percentage
+    warn_change: 10
+
+    # skip publishing a feed if price goes above this percentage
+    skip_change: 20
+
+    # skip publishing a feed if producer is not an active witness.
+    skip_inactive_witness: True
+
+    # how to derive a single price from several sources
+    # Choose from: "median", "mean", or "weighted" (by volume)
+    metric: weighted
+
+    # Select sources for this particular asset. Each source
+    # has its own fetch() method and collects several markets
+    # any market of an exchanges is considered but only the
+    # current asset's price is derived
+    #
+    # Choose from: - "*": all,
+    #              - loaded exchanges (see below)
+    sources:
+        -*
+
+    # Core exchange factor for paying transaction fees in
+    # non-BTS assets. Premium of 5%
+    core_exchange_factor: 1.2
+
+    # maintenance collateral ratio (percentage)
+    maintenance_collateral_ratio: 175.0
+
+    # Maximum short squeeze ratio
+    maximum_short_squeeze_ratio: 110.0
+
+    # If set to True, prices are also derived via 3
+    # markets instead of just two:
+    # E.g.: GOLD:USD -> USD:BTC -> BTC:BTS = GOLD:BTS
+    derive_across_3markets: True
+
+    # Activate the global settlement protection and the percentage of protection.
+    # If price to publish goes below global settlement price,
+    # use global_settlement_price * (maximum short squeeze ratio + global_settlement_protection) / 100 as feed price. 
+    # This could be used with BSIP42 as margin calls are not eaten fast enough and global
+    # settlement triggered on a short deep.
+    # Default is None.
+    global_settlement_protection: 2
+    
+
+
+# Enabled assets that are derived if no asset is provided via command
+# line
+assets:
+    #BTC:
+    #USD:
+    #CNY:
+    DUS:
+        # One of:
+        #   
+        #   - 'adjusted_feed_price':  
+        #        formula: settlement_price * (1 + premium * adjustment_scale)
+        #        discussion: https://bitsharestalk.org/index.php?topic=26315.msg322091#msg322091
+        #        mandatory additional settings: 
+        #          - `target_price_adjustment_scale`: arbitrary adjustment to apply, 
+        #                 acceptable value are between 0.8 and 1.2.
+        #          - `target_price_adjustment_scale_at_premium`: use a different adjustement when 
+        #                 there is premium real_price > dex_price.
+        #          - `target_price_adjustment_scale_at_discount`: use a different adjustement when 
+        #                 there is discount real_price < dex_price.
+        #
+        #   - 'adjusted_real_price_empowered': 
+        #        formula: real_price * pow(1 + premium + theorical_premium, acceleration_factor)
+        #        discussion: https://bitsharestalk.org/index.php?topic=26315.msg321699#msg321699
+        #        mandatory additional settings: 
+        #          - `target_price_theorical_premium`: acceptable premium, 
+        #                a neutral price will be send when premium is equal to this. Ex: 0.02 .
+        #          - `target_price_acceleration_factor`: exponential factor to increase adjustment impact.
+        #                Acceptable values are between 1.5 and 4.
+        # 
+        #   - 'adjusted_dex_price_using_buckets':
+        #        formula: dex_price * (1 + (K * (premium * 100))) 
+        #        discussion: https://bitsharestalk.org/index.php?topic=26315.msg321713#msg321713
+        #
+        #   - 'pid':
+        #        forumla: dex_price * pid_adjustment
+        #        discussion: https://bitsharestalk.org/index.php?topic=26278.msg322246#msg322246
+        #        mandatory additional settings:
+        #          - `target_price_pid_proportional_factor`: factor for the proportinal part of the PID adjustment;
+        #               it scales the premium adjustment. 
+        #          - `target_price_pid_integral_factor`: factor for the integral part of the PID adjustment;
+        #               it impacts how fast the adjustment will accumulate over time. 
+        #          - `target_price_pid_derivative_factor`: factor for the derivative part of the PID adjustment;
+        #               it impacts how strong is the curve direction will change the adjustment. 
+        #          - `target_price_pid_safe_upward_feed_change`: feed price will never move more that this ratio when the curve is upward;
+        #               used to avoid big feed prices moves.
+        #          - `target_price_pid_safe_downward_feed_change`: feed price will never move more that this ratio when the curve is downward;
+        #               used to avoid big feed prices moves.
+        #           - `target_price_pid_historic_value_file`: file path where to store past values that will be used in the next run.
+        #        optional additional settings:
+        #           - `target_price_pid_integral_adjustment_max`: max value for integral part of the PID adjustment. 
+        #           - `target_price_pid_integral_adjustment_min`: min value for integral part of the PID adjustment. 
+
+        target_price_algorithm: 'adjusted_feed_price'
+        target_price_adjustment_scale_at_discount: 0.5
+        target_price_adjustment_scale_at_premium: 1
+
+# Intermediate assets are useful for 2 and 3 market price derivation
+# E.g.: USD:BTC -> BTC:BTS = USD:BTS
+#       GOLD:USD -> USD:BTC -> BTC:BTS = GOLD:BTS
+intermediate_assets:
+    #- CNY
+    #- BTC
+    - USDT
+    # - ETH
+    # - DNA
